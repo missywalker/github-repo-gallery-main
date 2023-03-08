@@ -1,6 +1,10 @@
 //The div where your profile info will appear, woohoo!! 
 const overview = document.querySelector(".overview");
 
+//ul that displays the repos list
+const repoList = document.querySelector(".repo-list");
+
+
 const username = "missywalker";
 
 const getData = async function ()  {
@@ -27,4 +31,22 @@ const displayData = async function (data) {
     </div> 
     `;
     overview.append(newDiv);
+    fetchReposList();
+};
+
+fetchReposList = async function () {
+    const fetchRepos = await fetch (`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
+    const reposData = await fetchRepos.json();
+    //console.log(reposData);
+    reposDisplayInfo(reposData);
+};
+//fetchReposList();
+
+reposDisplayInfo = function (repos) {
+    for (const repo of repos) {
+        const repoLiItem = document.createElement("li");
+        repoLiItem.classList.add("repo");
+        repoLiItem.innerHTML = `<h3>${repo.name}</h3>`
+        repoList.append(repoLiItem);
+    }
 };
