@@ -10,6 +10,12 @@ const allRepoInfo = document.querySelector(".repos");
 //selects section with a class of "repo-data" where individual repo data appears
 const individualRepoInfo = document.querySelector(".repo-data");
 
+//select back to the repo gallery button 
+const backToRepoGalleryButton = document.querySelector(".view-repos");
+
+// search by name placeholder  <input type="text" class="filter-repos hide" placeholder="Search by name" />
+const filterInput = document.querySelector(".filter-repos");
+
 const username = "missywalker";
 
 const getData = async function ()  {
@@ -48,12 +54,14 @@ const fetchReposList = async function () {
 //fetchReposList();
 
 const reposDisplayInfo = function (repos) {
+    filterInput.classList.remove("hide");
     for (const repo of repos) {
         const repoLiItem = document.createElement("li");
         repoLiItem.classList.add("repo");
         repoLiItem.innerHTML = `<h3>${repo.name}</h3>`
         repoList.append(repoLiItem);
     }
+    filterInput.classList.add("filter-repos");
 };
 
 repoList.addEventListener("click", function (e) {
@@ -82,6 +90,7 @@ const specificRepoInfo = async function (repoName) {
     };
 
     const displaySpecificRepoInfo = async function (repoInfo, languages) {
+        backToRepoGalleryButton.classList.remove("hide");
         individualRepoInfo.innerHTML = "";
         individualRepoInfo.classList.remove("hide");
         allRepoInfo.classList.add("hide");
@@ -94,6 +103,30 @@ const specificRepoInfo = async function (repoName) {
         <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
     `;
         individualRepoInfo.append(div);
-
+       
         
     }
+
+
+    backToRepoGalleryButton.addEventListener("click", function () {
+        //display the section with the class of "repos" 
+        allRepoInfo.classList.remove("hide");
+        //add "hide" class to the section where indiv repo data will appear
+        individualRepoInfo.classList.add("hide");
+        //add hide class to the back to repo gallery button itself
+        backToRepoGalleryButton.classList.add("hide");
+    });
+
+    filterInput.addEventListener("input", function (e) {
+        const searchText= e.target.value;
+        const repos = document.querySelectorAll(".repo");
+        const searchLowercaseText = searchText.toLowerCase();
+        for (const repo of repos) {
+          const  repoLowercase = repo.innerText.toLowerCase();
+            if (repoLowercase.includes(searchLowercaseText)) {
+                repo.classList.remove("hide");
+        } else {
+            repo.classList.add("hide");
+        }
+    }
+    });
